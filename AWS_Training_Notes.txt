@@ -1,0 +1,132 @@
+2. For practicing AWS Create an Account on AWS: https://portal.aws.amazon.com/billing/signup#/start -- using personal ID
+
+3. For Trainings and certification: https://www.aws.training ---- using personal ID
+
+4. For books (eKits) use the email with which you are registered for the course: https://evantage.gilmoreglobal.com/#/user/registration -- TCS mail ID
+
+5. For hands on labs use the email with which you are registered for the course: https://in-globalknowledge-jp.qwiklabs.com --TCS mail ID
+
+New for AWS Lambda – Predictable start-up times with Provisioned Concurrency
+https://aws.amazon.com/blogs/compute/new-for-aws-lambda-predictable-start-up-times-with-provisioned-concurrency/
+ 
+Following links would be good to bookmark.
+https://www.aws.training/
+https://aws.amazon.com/developer/
+https://workshops.aws/
+https://aws.amazon.com/premiumsupport/knowledge-center/
+https://www.youtube.com/channel/UChcNwT7cu-YWANCluhcfOaQ
+
+https://share-tcs-630.s3.amazonaws.com/tcs-cs-demo.png
+
+My Videos
+Starting Cloud Journey with AWS - https://www.youtube.com/watch?v=x7B52O9_Ay4
+
+AWS A/C Creation, AWS Console Walkthrough and Cloudshell - https://www.youtube.com/watch?v=FCFWLXwS-Hc
+
+Starting with Amazon S3 (Hosting a static website on S3) - https://www.youtube.com/watch?v=smnsGYXgwBg
+
+
+
+NIST - National Institute of Standards and Technology
+
+IT Resources
+- Compute
+- Storage
+- Network
+which have Security, Monitor, Load Balancing, AutoScaling
+
+Cloud Characteristics - 5 count
+- On Demand
+- Sharable
+- Rapid Elastic
+- Metered
+- Broad Internet Access
+
+Stakeholders
+- User
+- Cloud Service Provider - AWS
+- Broker
+- Auditors
+- Carriers
+
+Service Models
+- IaaS - EC2, Lambda
+- PaaS - elastic beanstalk
+- SaaS - 
+
+Cloud Deployment Model
+- Private
+- Public
+- Hybrid
+
+Cloud Computing - IaC - Infrastructure as Cloud
+
+
+Monolithic Application - Least Cohesive and Highly coupled 
+Microservices - Highly Cohesiva and low coupled
+
+AWS Compute Services
+-----------------------
+
+EC2
+--- 
+
+Type of comupte machine - GCMAS 
+- General Purpose
+- Compute Optimize - 
+- Memory Optimize - cache
+- Accelerate Computing - ML
+- Storage Optimize
+
+Pricing
+- On-Demand
+- Reserved Instances - flat fee - discount
+- On-Spot Instance - can be taken away - less price
+
+Elastic Load Balancing
+----------------------
+
+Needs VPC - Virtual Private Club
+required for Health Check
+
+Sticky Session - alternatives
+- Amazon Dynamo DB
+- Cache infrastrcuture
+
+Amazon EC2 Autoscaling 
+- Minimum
+- Maximum
+- Desired
+
+Types
+- Manual Scaling
+- Scheduled Scaling
+- Dynamic Scaling
+
+Connection to Service
+- Service Client API
+- Resource API
+
+boto3 - SDK for Python
+
+
+Developer Tools
+- AWS Cloud 9 - nodejs - IDE - Build Serverless 
+- AWS X-Ray - performance monitoring and issues
+
+AWS Cloudwatch
+- Metrics
+- logs
+- alarms
+- dashboards
+
+AWS Cloudtrail
+- logs all the API calls
+
+S3 - write free, Read costly 
+
+- Amazon S3 - Buckets - frequent data
+- Amazon S3 Glacier - Archive Storage - Vaults - takes time for retrieval 
+- Amazon EFS - Shared Network Files
+- AWS Storage Gateway - Hybrid Cloud
+- Amazon EBS - HDD, SSD - harddisk for Amazon EC2 Instances
