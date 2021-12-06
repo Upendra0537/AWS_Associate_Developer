@@ -1,0 +1,404 @@
+Course: Ultimate AWS Certified Developer Associate 2021 - NEW!
+
+Regions - compliance, Price, not all service available everywhere, latency
+ - Zones(3 or more - disaster recovery)
+	 - Point of Present(216 -  to reduce end user latency)
+
+Global Services
+-IAM
+-Route 53(DNS)
+-CloudFront(Content Delivery Network)
+-WAF(Web Application Firewall)
+
+Regional Services
+-Amazon EC2(IaaS)
+-Elastic Beanstalk(PaaS)
+-Lambda(FaaS)
+-Rekognition(SaaS)
+
+-----------------------------------
+IAM - Identity and Access Management
+------------------------------------
+When account created it will be root user(perfer not to use - as it has high permissions)
+Users or Groups - assigned JSON document - Policies - Permission - least privilege principle
+- Groups only contains users not groups 
+- users in each group will have same privilages
+- tags are added for description
+IAM Policy Structure - JSON document
+- Version and ID
+- contains statements
+	- sid - statement Id - Optional
+	- effect - Allow/Deny
+	- Principal - account/user/role - Optional
+	- Action - list of actions to allow/deny - get/put - can be *
+	- Resource - list of resource on which action can be preformed - can be *
+	- Conditional - optional
+IAM Password Policy
+IAM MFA - Multi Factor Authentication = Password + Security Device(Virtual MFA Device, U2F - Universal 2nd Factor - chip, Hardware Key Fob MFA Device, AWS GovCloud(US)) - to setup select the profile and My Security Credentials
+
+User Access AWS - Protection
+- AWS Management Console - password + MFA
+- AWS Command Line Console(CLI) - Access Key required to configure(from CLI software), Cloudshell(not available in all regions)
+- AWS Software Development Kit(SDK) - Language Specific - Access Key 
+	- IAM Roles - for communicating with the applications.
+IAM Security Tools
+- IAM Credentials Report - account level
+- IAM Acccess Advisor - user level 
+
+----
+EC2 - Elastic Compute Cloud - IaaS
+----
+EC2 User Data Script - Bootstraping - runs only once when creating EC2 Instance - Runs with the Root user
+public IP address changes when we stop and start the EC2 Instance
+Private IP address doesnt change
+
+EC2 Instance Types
+- General Purpose - starts with t
+- Compute Optimized - Batch, Machine learning, gaming - starts with C
+- Memory Optimized - relational, cache store - starts with R, X
+- Storage Optimized - OLTP, NoSQL, Datawarehouse, Distributed sys - Starts with I, D
+
+Security groups  - firewall on EC2 Instance
+- only contains allow rules, can be attached to multiple instance
+- related only to region/VPC
+- Controls inbound(default - all blocked) and outbound(default - all pass) traffic
+Classic Ports
+22 - SSH(secure Shell) - linux
+21 - FTP
+22 - SFTP
+80 - HTTP - unsecured
+443 - HTTPS - secured
+3389 - RDP(Remote Desktop Protocol) - windows
+
+EC2 Instance Connect - to SSH into the Instance 
+Access to EC2 instances would be provided by IAM Roles
+
+Purchase Options
+- EC2 On Demand
+	- Window/Linux - per sec after first min
+	- other OS - per hour
+	- highest cost
+	- short-term and unpredictable
+- EC2 Reserved Instances - 1 or 3 Years only
+	- 75% discount compared to On-demand
+	- No upfront/partial upfront/All upfront
+	- reserve specific instance type
+	- Steady State usage - database
+	- Type
+		- Convertible Reserved instance - 54% compared to On-demand
+		- Scheduled Reserved Instance  - launch with in that day/week/month - need commitment 
+- EC2 Spot Instances
+	- 90% discount compared to On-demand
+	- can lose at any point
+	- most cost-efficient
+	- workloads that are resilient to failure - Batch jobs/Data analysis/Image processing/Distributed
+	- Not used for database
+- EC2 Dedicated Hosts
+	- compliance requirements
+	- use existing server-bound software licenses
+	- more expense
+	- 3 years period reservation
+- EC2 Dedicated Instances
+	- Dedicated Hardware
+	- can be shared instance in same account
+	- No control over instances
+
+EBS Volume - Elastic Block Store - Network Drive - Zone Restricted
+- used to persist date even after the instance is terminated
+- Bound to a Zone(if snapshot is taken, we can move along)
+- can be mounted to only one instance at a time
+- by default, root EBS Volume will be deleted when root EC2 Instance is terminated.(can be controlled to preserve root volume when instance is terminated)
+- by default, any other EBS volume is not deleted 
+- EBS Snapshot - to restore or to transfer it to a different zone
+	- copy a snapshot to  different Zone or region
+	- create a new volume with the snapshot to a different zone
+EBS Volumes - 6 Types
+- gp2/gp3 - General purpose SSD - used for boot volume, Dev/test env
+	- Cost Effective Storage, low latency, 1GB to 16TB, 16000 IOPS
+	- gp2 - IOPS and throughput are linked
+	- gp3 - IOPS and throughput are independent
+- io1/io2 - Highest Performance SSD - used for boot volume
+	- Provisioned IOPS - critial applicaitons, 4GB to 16TB, 32,000 OPS
+	- increase PIOPS independent of storage
+	- io2 more durability
+	- io2 Block Express - sub millisecond latency
+- st1 - Low Cost HDD 
+	- Big data, Data Warehouse
+	- 500 MB iops 500
+- sc1 - Lowest cost HDD
+	- Cold HDD - infrequently accessed 
+	- 250 MB, IOPS 250
+
+EBS Multi-Attach - io1/io2 family
+- one EBS can be attached to multiple EC2 Instance in the same Zone
+- High application availability in clusters - Tera Data
+- Manage concurrent write operations
+
+AMI - Amazon Machine Image - Zone Restricted
+- Contains bootstrap to start an Instance
+- can be customized - add your OS, Software, Config
+- Public AMI/ Own AMI/ AWS Marketplace AMI
+- can be copies to difference zones but are not for other regions
+- Process - create an instance -> create an Image -> use the created Image to create another instance.
+
+EC2 Instance Store - Ephemeral Drive
+- high performance hardware disk - IO operations
+- attaching the physical hardware disk to EC2 Instance
+- Lose their storage if EC2 Instance is terminated
+
+EFS - Elastic File System
+- Managed NFS, Mountable across Zones(distinct from EBS - only one zone)
+- Highly available, scalable(PB size), expensive, Pay as per use
+- Web applications
+- Uses Security group for control access
+- only Linux based AMI supported - POSIX 
+- Performance Mode - Types
+	- General purpose - latency sensitive application(Web server)
+	- Max IO - higher latency, throughput, highly parallel(bigdata)
+- Throughput mode
+	- Bursting - 1TB = 50 MB IOPS
+	- Provisioned - throughput independent of storage
+- Storage Tiers - Life cylce management feature - Storage class
+	- Standard - frequently used
+	- Infrequent access(EFS-IA) - cost for retrival, low storage
+-Process - create EFS, create instances in different zones, SSH to instance - install amazon-efs-utils, format security group for inbound/outbound, attach the EFS to instances,
+
+ELB - Elastic Load Balancer - Managed Load Balancer
+- spread load to multiple downstream instances
+- Single point DNS for application
+- Health check up - port 4567 endpoint: /health - 200 response 
+- Provides SSL connectivity
+- high availability across Zone
+- Security Groups 
+	- Inbound - all http/https
+	- Outbound - security group of EC2 Instance
+- For the EC2 Instances Security Group - Inbound - only from the ELB
+4 ELB Types (Client -> ELB -> EC2 Instance)
+- Classic Load Balancer - old - not used 
+	- Supports TCSp(Layer 4) and HTTP/HTTPS(Layer 7) 
+	- Fixed Host - xxx.region.elb.amazonaws.com
+- Application Load Balancer(ALB)
+	- HTTP(Layer 7) 
+	- Multiple HTTP Application(Target Group - multiple Instances) 
+	- HTTP to HTTPS, WebSocket 
+	- Routing 
+		- Path - example.com/user or example.com/posts
+		- host name - one.example.com or two.example.com
+		- Query String - example.com/user?id=1234
+	- Microservice or Container based applications
+	- Health Check happens at the target group level
+	- Target Group
+		- Multiple EC2 Instances
+		- ECS tasks
+		- Lambda Functions
+		- Private IP address
+	- Fixed Host - xxx.region.elb.amazonaws.com
+	- Clients IP not know to the EC2 Instances but to get it X-Forwarded-For needs to be added to the header
+- Network Load Balancer(NLB) 
+	- Traffic flows from the Client to the EC2 Instance
+	- TCP and UDP Traffic
+	- less latency(100ms) vs 400ms for ALB
+	- one static Fixed IP ( Elastic IP Address) per Zone - can be Whitelisting specific IP
+	- Exterme Performance
+	- Target Groups
+		- EC2 Instance
+		- IP Address 
+		- Application Load balancer
+- Gateway Load Balancer(GWLB)
+	- Layer 3
+	- functions
+		- Transparent Network Gateway - single entry/exit
+		- Load Balancer - distribute traffic to applications
+	- Deploy, Scale and Manage 3rd party network virtual applications in AWS
+	- All traffic goes through gateway and then to the target group containing EC2 instances and then passes through the gateway to the application
+	- client -> GWLB -> Target Group -> GWLB -> Applications
+	- GENEVE Protocal - port 6081
+	- Target Groups
+		- EC2 Instances
+		- Private IP
+Sticky Sessions - session affinity - 
+	- client makes two request will go to the same EC2 Instance
+	- Classic and Application Load Balancer
+	- Reserved Cookie names - AWSALB, AWSALBAPP, AWSALBTG
+	- Cookier used with expiration date 
+		- Application Cookie
+			- Custom Cookie
+				- generated by target 
+				- specific to target group
+			- Application Cookie
+				- generated by load balancer - AWSALBAPP
+		- Duration-based cookie
+			- generated by load balancer
+			- AWSALB for ALB, AWSELB for CLB
+	- creates imbalances 
+	- Process - Target group - Edit Attributes - stickiness
+Cross-Zone Load Balancer
+	- Each load balancer instance distributed evenly across all instances in a zone
+	- ALB - Always On - no inter zone data changes
+	- NLB - Disabled (default) - inter zone data changes apply
+	- CLB - Disabled (default) - no inter zone data changes
+Ecryption in Loadbalancer
+	SSL - Secure Sockets Layer - in-flight encryption 
+	TLS - Transport Layer Security 
+	ACM - AWS Certificate Manager (SSL/TLS)
+	User -> https(encrypted) -> LoadBalancer -> http(VPC) -> EC2 Instance
+	SNI - Server Name Indication
+		- multiple SSL Certificate onto one web server
+		- works with ALB and NLB.
+Connection Draining
+	- CLB - Connection Draining
+	- ALB & NLB - Deregistration Delay
+	- in-flight request are given time to complete while the instance in de-registered or unhealthy
+
+Auto Scaling Group (ASG) - Free service
+- Scale out - adding Instances
+- Scale In  - removing Instances
+- min, desired and max
+- Automatically register new instance
+- Possible to scale based on CloudWatch
+- Metrics(used for alarms) are computed for overall ASG instances
+- ASG will automatically create a new replacement instance if a instance is terminated(for any reason)- it will not restart
+- Always needs a EC2 Instance Templace to scale IN/OUT
+- scale-IN/Out Dynamically
+- Cooldown Period - 300 seconds - will not launch or terminate additional instances
+- use AMI for quicker faster instance creation
+Types
+- Target Tracking Scaling - CPU usage
+- Simple/Step Scaling - need to set how many instances to add/remove based on cloudwatch
+- Scheduled Actions - Anticipated scaling 
+- Predictive Scaling -  Continuously forcast and scaling ahead
+Metrics
+- CPUUtilization - Average
+- RequestCountPerTarget - ALB
+- Average Network In/Out - NLB
+- Any Custom Metrics -  using CloudWatch
+
+------
+AWS RDS - Relation Database Services - Managed Services
+--------
+Database supported
+	- Postgres
+	- MySQL
+	- MariaDB
+	- Oracle
+	- Microsoft SQL Server
+	- Aurora(AWS Database)
+- Managed Service
+	- Automated Provising, upgrade window
+	- Backups(every 5 mins and retains 7 days), Snapshots(manual trigger), Multiple zone setup for Disaster Recovery)
+	- Monitoring dashboard
+	- read replica - to improve read performance
+	- Horizontal/vertical scaling
+	- Storage backed by EBS
+	- NO SSH for instances
+- RDS Auto Scaling - set Maximum Storage Threshold 
+- RDS Read Replicas
+	- Scalable Reads
+	- 5 read replicas - in AZ, Cross AZ, Cross Region)
+	- Replication is ASYNC(eventually consistent)
+	- can be promoted to a main DB
+	- need to update all the read replica's by the application
+	- Network Cost
+		- read replica 
+			- same region - no fee
+			- cross region - fee
+- RDS Multiple AZ - Disaster Recover
+	- SYNC replication - one DSN name - automatic failover
+	- Not used for scaling
+	- Standby is failover -> master fails Standby becomes master
+	- Read replica be setup in multiple AZ for Disaster Recovery
+- RDS - Single AZ to Multi AZ
+	- Zero Downtown
+	- modify the setting - no work to be done
+	- Snapshot taken from master, restore to standby and SYNC setup
+- RDS Security - Encryption
+	- At Rest
+		- Only happen at time of RDS creation (else use snapshot method to encrypt)
+		- can encrypt master and read replica with AWS-KMS
+		- Transparent Data Encryption(TDE) - Oracle and SQL Server 
+		- If master is no encryption, read replica cannot be encrypted
+	- In-flight encryption
+		- SSL certificate to encrypt data
+		- SSL option provided while RDS connection
+	- RDS backup
+		- Snapshot 
+			- encrypted RDS <=> encrypted snapshot
+			- unencrypted RDS <=> unencrypted snapshot
+		- encrypt and un-encrypted RDS
+			- create snapshot of unencrypted RDS
+			- copy the snapshot and enable encryption for snapshot
+			- Restore the db from encrypted snapshot
+			- migrate applicatio to the new DB and delete old DB
+	- RDS network & IAM
+		- deployed private
+		- security 
+		- To enforce SSL 
+			- MySQL - run query on users
+			- PostGres - enable a flag
+		- Access Management
+			- IAM policy
+			- username/pwd
+			- IAM based authentication - MySQL and PostgreSQL
+				- no password needs only token(lifetime 15 min) via RDS service
+				- IAM to cental manage users than in the DB
+
+Amazon Aurora:
+- AWS properatory - not open source, AWS Cloud Optimized
+- Postgres(3X), MySQL(5X) Driver available
+- 15 read replica, Failover is instant(30 sec), one Master
+- 20% more costlier than RDS
+- Replication(6 at anytime across zones, Supports cross region replication) + Self healing + Auto Expanding(10Gb to 64TB)
+- Backtrack - go to a point of time without backups
+- Process
+	client -> writer Endpoint -> one Master DB -> Shared storage volume -> read replica(auto scalling) -> Reader Endpoint(connection Load Balancing) -> Client
+
+Amazon ElastiCache:
+- Managed Redis or Memcached
+- in-memory databases for high performance and low latency
+- application stateless - required heavy code changes to configure
+- Redis	- similar to RDS in properties
+	- multiple AZ, failover, read replica scaling
+	- backup and restore
+	- Data durability using AOF persistance
+- Memcached - prone to failure
+	- multi-node for partitioned - sharding
+	- no high availbility(replication)
+	- No persistance, no backup, no restore
+	- multi-threded architecture 
+- Strategy
+	- Lazy loading/cache-Aside/Lazy Population - read penality, Write quick
+		- cache hit = application -> Amazon Elastic Cache
+		- cache miss = application -> Amazon RDS -> Write to Cache - 3 network trip
+		- probablity of stale data when cache hit
+	- Write Through - add or update cache when DB is updated - write penality, read quick
+		- cache hit = application -> Amazon Elastic Cache
+		- application -> write -> Amazon RDS -> Write to Cache 
+		- Cache chum -  lot of cache data written but never read
+	- Cache Evictions
+		- explicitly delete
+		- Last recently used when cache is full
+		- TTL - set time-to-live
+- Replication	
+	- Multiple AZ capability
+	- upto 500 nodes per cluster
+	- Cluster Mode Disabled
+		- one primary node(Read/write) - 5 replicas(read) - ASYNC
+		- all in one shard
+	- Cluster Mode Enabled
+		- data is partitioned across shards
+		- each shard will have one primary node - 5 replica	
+
+--------
+Route S3
+---------
+DNS - Domain Name System 
+	- Domain => IP Address
+	- Need to register your domain - Domain registar
+	- DNS records
+	- Zone Files - contains DNS records
+	- Name Server - resolved DNS queries - map domain to IP
+	- Top Level Domain(TLD) - root - com, in, us, gov
+	- Second Level Domain(SLD) - + TLD -  amazon.com, google.com
+	- Sub domain - + SLD + TLD
+	- Domain name - Sub Domain + SLD +TLD
+	- Fully Qualified Domain Name - FQDN = Domain + subdomain + SLD + TLD
